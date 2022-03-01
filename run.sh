@@ -125,5 +125,5 @@ fi
 wait;
 #score
 # Computing the best WERs
-for x in exp/*/decode_test; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done
+for x in exp/*/decode*; do [ -d $x ] && grep WER $x/wer_* | utils/best_wer.sh; done
 
