@@ -5,8 +5,8 @@
 # initialization commands
 . ./cmd.sh
 
-stage=3
-
+stage=0
+rm -rf out.wav
 # transcripts="data/train/text"
 # echo $@ | python wol_index.py --transcripts $transcripts
 
@@ -38,3 +38,28 @@ if [ $stage -le 3 ]; then
     cd ../..
 fi;
 
+if [ $stage -le 4 ]; then 
+    # get occurences
+    echo $@ | python merge_phones.py \
+        --phones lang/phones.txt \
+        --lexicon lang/lexicon.txt \
+        --alignment exp/2D/merged_alignment.txt \
+        --spk2utt data/train/spk2utt \
+        --wavscp data/train/wav.scp \
+        > snips.txt
+fi;
+
+if [ $stage -le 5 ]; then 
+    count=0
+    while IFS= read -r line; do
+        tokens=( $line )
+        sox ${tokens[0]} in$count.wav trim ${tokens[1]} ${tokens[2]}
+        (( count++ ))
+    done < snips.txt;
+    rm snips.txt
+fi;
+
+if [ $stage -le 6 ]; then
+    sox *.wav out.wav
+    rm -rf in*.wav
+fi;
