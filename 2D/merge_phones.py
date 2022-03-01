@@ -1,6 +1,5 @@
 import argparse
 from collections import defaultdict
-from encodings import utf_8
 
 def parse_args():
     parser = argparse.ArgumentParser()
