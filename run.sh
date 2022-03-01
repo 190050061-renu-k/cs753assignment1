@@ -106,17 +106,21 @@ fi
 if [ $stage -le 6 ]; then
   ### innovation
   echo "Innovation"
-  steps/align_si.sh  --nj $nj --cmd "$train_cmd"  data/train lang exp/tri1 exp/trild_ali;
-  steps/train_lda_mllt.sh  --boost-silence 1.25 --cmd "$train_cmd" 6000 10000 data/train lang  exp/trild_ali exp/tri2;
-  echo "LDA+MLLT training done."
+  steps/align_fmllr.sh  --nj $nj --cmd "$train_cmd" data/train_sp3 lang exp/trisp3 exp/trisp3_ali;
+  # steps/train_lda_mllt.sh  --boost-silence 1.25 --cmd "$train_cmd" 6000 10000 data/train lang  exp/trild_ali exp/tri_lda;
+  steps/train_sat.sh --boost-silence 1.25 --cmd "$train_cmd" 1000 10000 data/train_sp3 lang exp/trisp3_ali exp/trisatsp3; 
+  echo "SAT training done."
   (
     echo "Decoding the test set[D]"
-    utils/mkgraph.sh lang exp/tri_lda exp/tri_lda/graph 
+    utils/mkgraph.sh lang exp/trisatsp3 exp/trisatsp3/graph 
 
     # steps/decode.sh --nj $test_nj --cmd "$decode_cmd" \
     #   exp/tri_lda/graph data/dev exp/tri_lda/decode_dev
-    steps/decode.sh --nj $test_nj --cmd "$decode_cmd" \
-      exp/tri_lda/graph data/test exp/tri_lda/decode_test
+    # steps/decode.sh --nj $test_nj --cmd "$decode_cmd" \
+    #   exp/tri_lda/graph data/test exp/tri_lda/decode_test
+
+    steps/decode_fmllr.sh --nj $test_nj --cmd "$decode_cmd" \
+      exp/trisatsp3/graph data/test exp/trisatsp3/decode_test
 
     echo "Triphone Decoding done[D]"
   ) &
