@@ -40,7 +40,7 @@ fi;
 
 if [ $stage -le 4 ]; then 
     # get occurences
-    echo $@ | python merge_phones.py \
+    echo $@ | python3 merge_phones.py \
         --phones lang/phones.txt \
         --lexicon lang/lexicon.txt \
         --alignment exp/2D/merged_alignment.txt \

@@ -1,5 +1,6 @@
 import argparse
 from collections import defaultdict
+from encodings import utf_8
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -30,7 +31,7 @@ def lect_phones(alignment_txt):
 
 def word2phone(lexicon_txt):
     s2w = {}
-    with open(lexicon_txt) as file:
+    with open(lexicon_txt,encoding="UTF-8") as file:
         for line in file.readlines():
             tokens = line.split()
             sequence = "".join(tokens[1:])
